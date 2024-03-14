@@ -8,3 +8,8 @@ pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
 
+## Unit tests
+The folder `tests/` contains python file(s) that unit test the modules from `src/`. The tests can be run using:
+```
+pytest tests/*.py
+```
