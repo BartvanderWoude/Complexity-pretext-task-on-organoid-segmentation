@@ -8,6 +8,31 @@ pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
 
+## Usage
+As described, training is divided into pretext training and downstream training.
+### Pretext
+Pretext training can be done using:
+```
+python pretext_train.py --task=[task option]
+```
+Here, `[task option]` consists of `{b,d,s,r,B,D,S,R}`.
+
+Testing can be done using:
+```
+python pretext_test.py
+```
+
+### Downstream
+Downstream training can be done using:
+```
+python downstream_train.py --task=[task option]
+```
+
+Downstream testing can be done using:
+```
+python downstream_test.py --task=[task option]
+```
+
 ## Unit tests
 The folder `tests/` contains python file(s) that unit test the modules from `src/`. The tests can be run using:
 ```
