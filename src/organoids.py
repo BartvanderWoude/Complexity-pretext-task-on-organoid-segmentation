@@ -15,10 +15,12 @@ class Organoids(Dataset):
         self.task1 = task1
         self.task2 = task2
 
+        self.prepare_transform = transforms.Compose([
+            transforms.Resize(320, antialias=True),
+        ])
         self.transform_task1 = spd.get_distortion_transform(task1)
         self.transform_task2 = spd.get_distortion_transform(task2)
         self.basic_transform = transforms.Compose([
-            transforms.Resize(320, antialias=True),
             transforms.ConvertImageDtype(torch.float32),
             transforms.Normalize(mean=[0.5], std=[0.5]),
         ])
@@ -29,6 +31,8 @@ class Organoids(Dataset):
     def __getitem__(self, idx):
         img_path = self.path + self.df.iloc[idx, 0]
         image = read_image(img_path)
+
+        image = self.prepare_transform(image)
 
         if not self.task1 and not self.task2:
             gt_path = self.path + self.df.iloc[idx, 1]
