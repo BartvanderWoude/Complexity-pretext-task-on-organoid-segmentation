@@ -10,7 +10,7 @@ def test_organoids_dataset_downstream_train():
     assert len(dataset) == 40636
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_organoids_dataset_pretext_train():
@@ -20,7 +20,7 @@ def test_organoids_dataset_pretext_train():
     assert len(dataset) == 40631
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_organoids_dataset_test():
@@ -30,4 +30,4 @@ def test_organoids_dataset_test():
     assert len(dataset) == 20322
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0

@@ -9,7 +9,7 @@ def test_selfprediction_distortion_blur():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_drop():
@@ -18,7 +18,7 @@ def test_selfprediction_distortion_drop():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_shuffle():
@@ -27,7 +27,7 @@ def test_selfprediction_distortion_shuffle():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_rotate():
@@ -36,7 +36,7 @@ def test_selfprediction_distortion_rotate():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_blur_boxes():
@@ -45,7 +45,7 @@ def test_selfprediction_distortion_blur_boxes():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_drop_pixel():
@@ -54,7 +54,7 @@ def test_selfprediction_distortion_drop_pixel():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_shuffle_rotate():
@@ -63,7 +63,7 @@ def test_selfprediction_distortion_shuffle_rotate():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_rotate_boxes():
@@ -72,7 +72,7 @@ def test_selfprediction_distortion_rotate_boxes():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_combination():
@@ -81,7 +81,7 @@ def test_selfprediction_distortion_combination():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_combination2():
@@ -90,7 +90,7 @@ def test_selfprediction_distortion_combination2():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_combination3():
@@ -99,7 +99,7 @@ def test_selfprediction_distortion_combination3():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_combination4():
@@ -108,7 +108,7 @@ def test_selfprediction_distortion_combination4():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
 
 
 def test_selfprediction_distortion_no_task():
@@ -117,4 +117,4 @@ def test_selfprediction_distortion_no_task():
 
     assert sample.shape == (1, 320, 320)
     assert torch.max(sample) <= 1.0
-    assert torch.min(sample) >= -1.0
+    assert torch.min(sample) >= 0.0
