@@ -1,23 +1,29 @@
+import src.selfprediction_distortion as spd
+
 import torch
+import pandas as pd
 from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision.io import read_image
 
-import pandas as pd
-
 
 class Organoids(Dataset):
-    def __init__(self, file, path="./", transform=None):
+    def __init__(self, file, path="./", task1="", task2=""):
+        self.df = pd.read_csv(path + file, header=None, names=["stacks", "masks"])
         self.path = path + "organoid_data/"
-        self.df = pd.read_csv(path + file, header=None, names=["path"])
-        if transform is None:
-            self.transform = transforms.Compose([
-                transforms.Resize(320, antialias=True),
-                transforms.ConvertImageDtype(torch.float32),
-                transforms.Normalize(mean=[0.5], std=[0.5]),
-            ])
-        else:
-            self.transform = transform
+
+        self.task1 = task1
+        self.task2 = task2
+
+        self.prepare_transform = transforms.Compose([
+            transforms.Resize(320, antialias=True),
+        ])
+        self.transform_task1 = spd.get_distortion_transform(task1)
+        self.transform_task2 = spd.get_distortion_transform(task2)
+        self.basic_transform = transforms.Compose([
+            transforms.ConvertImageDtype(torch.float32),
+            transforms.Normalize(mean=[0.5], std=[0.5]),
+        ])
 
     def __len__(self):
         return len(self.df)
@@ -25,6 +31,25 @@ class Organoids(Dataset):
     def __getitem__(self, idx):
         img_path = self.path + self.df.iloc[idx, 0]
         image = read_image(img_path)
-        image = self.transform(image)
 
-        return image
+        image = self.prepare_transform(image)
+
+        if not self.task1 and not self.task2:
+            gt_path = self.path + self.df.iloc[idx, 1]
+            gt = read_image(gt_path)
+
+            gt = self.prepare_transform(gt)
+            gt = self.basic_transform(gt)
+
+            image = self.basic_transform(image)
+
+            return (image, gt)
+
+        gt = image.clone()
+        gt = self.basic_transform(gt)
+
+        image = self.transform_task1(image)
+        image = self.transform_task2(image)
+        image = self.basic_transform(image)
+
+        return (image, gt)
