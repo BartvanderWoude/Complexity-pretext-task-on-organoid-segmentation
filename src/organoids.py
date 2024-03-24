@@ -22,7 +22,6 @@ class Organoids(Dataset):
         self.transform_task2 = spd.get_distortion_transform(task2)
         self.basic_transform = transforms.Compose([
             transforms.ConvertImageDtype(torch.float32),
-            transforms.Normalize(mean=[0.5], std=[0.5]),
         ])
 
     def __len__(self):
