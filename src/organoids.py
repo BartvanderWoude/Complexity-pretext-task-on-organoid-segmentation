@@ -38,7 +38,9 @@ class Organoids(Dataset):
             gt_path = self.path + self.df.iloc[idx, 1]
             gt = read_image(gt_path)
 
+            gt = self.prepare_transform(gt)
             gt = self.basic_transform(gt)
+
             image = self.basic_transform(image)
 
             return (image, gt)
@@ -48,6 +50,6 @@ class Organoids(Dataset):
 
         image = self.transform_task1(image)
         image = self.transform_task2(image)
-        # image = self.basic_transform(image)
+        image = self.basic_transform(image)
 
         return (image, gt)
