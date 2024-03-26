@@ -3,3 +3,4 @@ torchvision
 pandas
 tqdm
 pytest
+piqa
