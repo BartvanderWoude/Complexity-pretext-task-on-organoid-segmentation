@@ -2,10 +2,18 @@
 # https://github.com/labmlai/annotated_deep_learning_paper_implementations/blob/master/labml_nn/unet/__init__.py
 
 import torch
-# import torchvision.transforms.functional
 from torch import nn
+from piqa import SSIM
 
 import src.unet_blocks as ub
+
+
+class SSIMLoss(SSIM):
+    def __init__(self):
+        super().__init__(n_channels=1)
+
+    def forward(self, x, y):
+        return 1. - super().forward(x, y)
 
 
 class UNet(nn.Module):

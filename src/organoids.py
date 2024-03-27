@@ -16,12 +16,12 @@ class Organoids(Dataset):
         self.task2 = task2
 
         self.prepare_transform = transforms.Compose([
-            transforms.Lambda(lambda x: x.repeat(3, 1, 1) if x.size(0) == 1 else x),
             transforms.Resize(320, antialias=True),
         ])
         self.transform_task1 = spd.get_distortion_transform(task1)
         self.transform_task2 = spd.get_distortion_transform(task2)
         self.basic_transform = transforms.Compose([
+            # transforms.Lambda(lambda x: x.repeat(3, 1, 1) if x.size(0) == 1 else x),
             transforms.ConvertImageDtype(torch.float32),
         ])
 
