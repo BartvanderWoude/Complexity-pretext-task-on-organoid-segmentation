@@ -4,7 +4,7 @@ from torchvision import models
 from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader
 
-import src.selfprediction_model as spm
+import src.model as m
 import src.selfprediction_train as spt
 import src.organoids as org
 import src.logger as lg
@@ -20,8 +20,8 @@ def train_pretext(task1="", task2=""):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}")
 
-    model = spm.UNet(1, 1)
-    loss_fn = spm.SSIMLoss().to(device)
+    model = m.UNet(1, 1)
+    loss_fn = m.SSIMLoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     logger = lg.Logger("pretext", task1, task2)
 

@@ -4,7 +4,7 @@ import os
 from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader
 
-import src.downstream_model as dm
+import src.model as m
 import src.downstream_train as dt
 import src.organoids as org
 import src.logger as lg
@@ -35,8 +35,8 @@ def train_downstream(task1="", task2=""):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}")
 
-    model = dm.UNet(1, 1)
-    loss_fn = dm.IoULoss().to(device)
+    model = m.UNet(1, 1)
+    loss_fn = m.IoULoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     logger = lg.Logger("downstream", task1, task2)
 
