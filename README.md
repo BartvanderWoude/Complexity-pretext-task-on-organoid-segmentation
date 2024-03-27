@@ -22,13 +22,13 @@ As described, training is divided into pretext training and downstream training.
 ### Pretext
 Pretext training can be done using:
 ```
-python pretext_train.py --task=[task option]
+python pretext_train.py --task1=[task option] [--task2=[task option]]
 ```
 Here, `[task option]` consists of `{b,d,s,r,B,D,S,R}`.
 
 Testing can be done using:
 ```
-python pretext_test.py --task=[task option]
+python pretext_test.py --task1=[task option] [--task2=[task option]]
 ```
 
 ### Downstream
