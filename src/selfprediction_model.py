@@ -1,4 +1,4 @@
-# Source: Lab ML - https://nn.labml.ai/unet/index.html
+# Source U-Net: Lab ML - https://nn.labml.ai/unet/index.html
 # https://github.com/labmlai/annotated_deep_learning_paper_implementations/blob/master/labml_nn/unet/__init__.py
 
 import torch

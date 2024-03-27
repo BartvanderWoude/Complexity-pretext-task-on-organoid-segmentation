@@ -10,7 +10,7 @@ import src.organoids as org
 import src.logger as lg
 
 
-def pretext_train(task1="", task2=""):
+def train_pretext(task1="", task2=""):
     print(f"Pretext training with tasks: {task1}, {task2}")
     crossval_folds = 5
     epochs = 50
@@ -65,4 +65,4 @@ def get_args():
 if __name__ == '__main__':
     task1, task2 = get_args()
 
-    pretext_train(task1=task1, task2=task2)
+    train_pretext(task1=task1, task2=task2)

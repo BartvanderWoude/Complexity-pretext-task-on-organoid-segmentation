@@ -37,15 +37,10 @@ class Organoids(Dataset):
         if not self.task1 and not self.task2:
             gt_path = self.path + self.df.iloc[idx, 1]
             gt = read_image(gt_path)
-
             gt = self.prepare_transform(gt)
-            gt = self.basic_transform(gt)
+        else:
+            gt = image.clone()
 
-            image = self.basic_transform(image)
-
-            return (image, gt)
-
-        gt = image.clone()
         gt = self.basic_transform(gt)
 
         image = self.transform_task1(image)
