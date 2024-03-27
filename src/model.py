@@ -1,11 +1,30 @@
-# Source: Lab ML - https://nn.labml.ai/unet/index.html
+# Source U-Net: Lab ML - https://nn.labml.ai/unet/index.html
 # https://github.com/labmlai/annotated_deep_learning_paper_implementations/blob/master/labml_nn/unet/__init__.py
+
+# Source IoU loss: https://www.kaggle.com/code/bigironsphere/loss-function-library-keras-pytorch
 
 import torch
 from torch import nn
 from piqa import SSIM
 
 import src.unet_blocks as ub
+
+
+class IoULoss(nn.Module):
+    def __init__(self, weight=None, size_average=True):
+        super(IoULoss, self).__init__()
+
+    def forward(self, inputs, targets, smooth=1):
+        inputs = inputs.view(-1)
+        targets = targets.view(-1)
+
+        intersection = (inputs * targets).sum()
+        total = (inputs + targets).sum()
+        union = total - intersection
+
+        IoU = (intersection + smooth)/(union + smooth)
+
+        return 1 - IoU
 
 
 class SSIMLoss(SSIM):
