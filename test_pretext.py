@@ -50,7 +50,7 @@ def test_pretext(task1, task2):
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description='Pretext Training')
+    parser = argparse.ArgumentParser(description='Pretext Testing')
     parser.add_argument('--task1', type=str, default="", help='Specify distortion type for task 1')
     parser.add_argument('--task2', type=str, default="", help='Specify distortion type for task 2')
 
