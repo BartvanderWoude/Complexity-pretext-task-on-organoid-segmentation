@@ -1,6 +1,7 @@
 import torch
 import argparse
 import os
+import pandas as pd
 from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader
 
@@ -11,18 +12,27 @@ import src.logger as lg
 
 
 def get_pretrained_model(task1="", task2=""):
-    path = f"output/models/pretext/{task1}_{task2}/"
-    model_name = ""
-    highest_fold = -1
-    for file in os.listdir(path):
-        file_components = file.split("_")
-        if int(file_components[0][1:]) > highest_fold:
-            model_name = file
-            highest_fold = int(file_components[0][1:])
+    model_path = f"output/models/downstream/{task1}_{task2}/"
+    evaluation_path = "output/evaluation/pretext_evaluation.csv"
+
+    if not os.path.exists(evaluation_path):
+        raise ValueError("No pretext evaluations found.")
+
+    if not os.path.exists(model_path):
+        raise ValueError("No downstream models found.")
+
+    df = pd.read_csv(evaluation_path)
+    df["task2"] = df["task2"].fillna("")
+
+    df = df[(df["task1"] == task1) & (df["task2"] == task2)]
+    df = df.sort_values(by="psnr", ascending=False)
+    highest_fold = df.iloc[0]["fold"]
+
+    model_name = f"f{highest_fold}_pretext_{task1}_{task2}.pth"
 
     print(f"Loading model: {model_name}")
 
-    return path + model_name
+    return model_path + model_name
 
 
 def train_downstream(task1="", task2=""):
