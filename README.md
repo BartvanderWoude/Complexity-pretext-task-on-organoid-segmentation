@@ -24,27 +24,28 @@ As described, training is divided into pretext training and downstream training.
 
 Pretext training can be done using:
 ```
-python pretext_train.py --task1=[task option] [--task2=[task option]]
+python train_pretext.py --task1=[task option] [--task2=[task option]]
 ```
-Here, `[task option]` consists of `{b,d,s,r,B,D,S,R}`.
 
 Testing can be done using:
 ```
-python pretext_test.py --task1=[task option] [--task2=[task option]]
+python test_pretext.py --task1=[task option] [--task2=[task option]]
 ```
+Here, `[task option]` consists of `{b,d,s,r,B,D,S,R}`.
 
 ### Downstream
 ![After downstream training models can segment organoids from an image.](./utils/downstream_results.png)
 
 Downstream training can be done using:
 ```
-python downstream_train.py --task1=[task option] [--task2=[task option]]
+python train_downstream.py --task1=[task option] [--task2=[task option]]
 ```
 
 Downstream testing can be done using:
 ```
-python downstream_test.py --task1=[task option] [--task2=[task option]]
+python test_downstream.py --task1=[task option] [--task2=[task option]]
 ```
+Here, `[task option]` consists of `{b,d,s,r,B,D,S,R}`.
 
 ## Unit tests
 The folder `tests/` contains python file(s) that contains unit tests for the modules from `src/`. The tests can be run using:
