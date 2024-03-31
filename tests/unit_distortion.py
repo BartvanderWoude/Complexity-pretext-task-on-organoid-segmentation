@@ -79,6 +79,26 @@ def test_selfprediction_distortion_rotate_boxes():
     gt_check(gt)
 
 
+def test_innate_relationship_jigsaw():
+    dataset = organoids.Organoids(file="utils/pretext_train.csv", task1="j", task2="")
+    sample, gt = dataset[0]
+
+    sample_check(sample)
+    assert len(gt) == 9
+    assert torch.max(gt) <= 8
+    assert torch.min(gt) >= 0
+
+
+def test_innate_relationship_predict_rotation():
+    dataset = organoids.Organoids(file="utils/pretext_train.csv", task1="p", task2="")
+    sample, gt = dataset[0]
+
+    sample_check(sample)
+    assert len(gt) == 1
+    assert gt[0] <= 3
+    assert gt[0] >= 0
+
+
 def test_selfprediction_distortion_combination():
     dataset = organoids.Organoids(file="utils/pretext_train.csv", task1="R", task2="B")
     sample, gt = dataset[0]
