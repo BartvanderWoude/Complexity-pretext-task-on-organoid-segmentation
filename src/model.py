@@ -3,11 +3,11 @@
 
 # Source IoU loss: https://www.kaggle.com/code/bigironsphere/loss-function-library-keras-pytorch
 
+import src.unet_blocks as ub
+
 import torch
 from torch import nn
 from piqa import SSIM
-
-import src.unet_blocks as ub
 
 
 class IoULoss(nn.Module):

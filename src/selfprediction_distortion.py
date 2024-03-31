@@ -5,7 +5,7 @@ import math
 
 def get_distortion_transform(task):
     possible_tasks = ["", "b", "d", "s", "r", "B", "D", "S", "R"]
-    assert task in possible_tasks, "Invalid task. Possible tasks: " + str(possible_tasks)
+    assert task in possible_tasks, "Invalid task" + str(task) + ". Possible tasks: " + str(possible_tasks)
 
     if task == "":
         return _do_nothing

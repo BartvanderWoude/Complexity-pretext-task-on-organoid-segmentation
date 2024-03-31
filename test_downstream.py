@@ -1,12 +1,22 @@
+import src.model as m
+import src.organoids as org
+import src.logger as lg
+import src.evaluation as ev
+
 import torch
 import argparse
 import os
 from torch.utils.data import DataLoader
 
-import src.model as m
-import src.organoids as org
-import src.logger as lg
-import src.evaluation as ev
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Downstream Testing')
+    parser.add_argument('--task1', type=str, default="", help='Specify distortion type for task 1')
+    parser.add_argument('--task2', type=str, default="", help='Specify distortion type for task 2')
+
+    args = parser.parse_args()
+
+    return args.task1, args.task2
 
 
 def get_trained_model(task1="", task2=""):
@@ -45,17 +55,7 @@ def test_downstream(task1, task2):
         model.load_state_dict(torch.load(model_path))
         model = model.to(device)
 
-        ev.evaluate_downstream(task1, task2, fold, model, test_loader, device, logger)
-
-
-def get_args():
-    parser = argparse.ArgumentParser(description='Downstream Testing')
-    parser.add_argument('--task1', type=str, default="", help='Specify distortion type for task 1')
-    parser.add_argument('--task2', type=str, default="", help='Specify distortion type for task 2')
-
-    args = parser.parse_args()
-
-    return args.task1, args.task2
+        ev.evaluate(task1, task2, fold, model, test_loader, device, logger)
 
 
 if __name__ == '__main__':

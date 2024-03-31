@@ -1,3 +1,8 @@
+import src.model as m
+import src.train as t
+import src.organoids as org
+import src.logger as lg
+
 import torch
 import argparse
 import os
@@ -5,14 +10,19 @@ import pandas as pd
 from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader
 
-import src.model as m
-import src.downstream_train as dt
-import src.organoids as org
-import src.logger as lg
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Downstream Training')
+    parser.add_argument('--task1', type=str, default="", help='Specify pretrained task to load for task 1')
+    parser.add_argument('--task2', type=str, default="", help='Specify pretrained task to load for task 2')
+
+    args = parser.parse_args()
+
+    return args.task1, args.task2
 
 
 def get_pretrained_model(task1="", task2=""):
-    model_path = f"output/models/downstream/{task1}_{task2}/"
+    model_path = f"output/models/pretext/{task1}_{task2}/"
     evaluation_path = "output/evaluation/pretext_evaluation.csv"
 
     if not os.path.exists(evaluation_path):
@@ -35,6 +45,20 @@ def get_pretrained_model(task1="", task2=""):
     return model_path + model_name
 
 
+def initialize_model():
+    model = m.UNet(1, 1)
+
+    pretrained = get_pretrained_model(task1=task1, task2=task2)
+    model.load_state_dict(torch.load(pretrained))
+
+    model.final_conv = torch.nn.Conv2d(64, 1, kernel_size=1)
+    for i in range(len(model.down_conv)):
+        model.down_conv[i].first.weight.requires_grad = False
+        model.down_conv[i].second.weight.requires_grad = False
+
+    return model
+
+
 def train_downstream(task1="", task2=""):
     print(f"Downstream training with tasks: {task1}, {task2}")
     crossval_folds = 5
@@ -45,19 +69,10 @@ def train_downstream(task1="", task2=""):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}")
 
-    model = m.UNet(1, 1)
+    model = initialize_model().to(device)
     loss_fn = m.IoULoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     logger = lg.Logger("downstream", task1, task2)
-
-    # Load pretrained task1 and task2 model
-    pretrained = get_pretrained_model(task1=task1, task2=task2)
-    model.load_state_dict(torch.load(pretrained))
-    model.final_conv = torch.nn.Conv2d(64, 1, kernel_size=1)
-    for i in range(len(model.down_conv)):
-        model.down_conv[i].first.weight.requires_grad = False
-        model.down_conv[i].second.weight.requires_grad = False
-    model = model.to(device)
 
     dataset = org.Organoids(file="utils/downstream_train.csv")
     kf = KFold(n_splits=crossval_folds, shuffle=True, random_state=64)
@@ -70,25 +85,15 @@ def train_downstream(task1="", task2=""):
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
         val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
 
-        dt.downstream_train(model=model,
-                            train_loader=train_loader,
-                            val_loader=val_loader,
-                            optimizer=optimizer,
-                            loss_fn=loss_fn,
-                            fold=fold,
-                            epochs=epochs,
-                            device=device,
-                            logger=logger)
-
-
-def get_args():
-    parser = argparse.ArgumentParser(description='Downstream Training')
-    parser.add_argument('--task1', type=str, default="", help='Specify pretrained task to load for task 1')
-    parser.add_argument('--task2', type=str, default="", help='Specify pretrained task to load for task 2')
-
-    args = parser.parse_args()
-
-    return args.task1, args.task2
+        t.train(model=model,
+                train_loader=train_loader,
+                val_loader=val_loader,
+                optimizer=optimizer,
+                loss_fn=loss_fn,
+                fold=fold,
+                epochs=epochs,
+                device=device,
+                logger=logger)
 
 
 if __name__ == '__main__':
