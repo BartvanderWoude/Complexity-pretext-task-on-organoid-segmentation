@@ -4,7 +4,7 @@ import math
 
 
 def get_distortion_transform(task):
-    possible_tasks = ["", "b", "d", "s", "r", "B", "D", "S", "R"]
+    possible_tasks = ["", "b", "d", "s", "r", "B", "D", "S", "R", "j", "p"]
     assert task in possible_tasks, "Invalid task" + str(task) + ". Possible tasks: " + str(possible_tasks)
 
     if task == "":
@@ -25,6 +25,10 @@ def get_distortion_transform(task):
         return _shuffle_rotate
     elif task == "R":
         return _rotate_boxes
+    elif task == "j":
+        return _jigsaw
+    elif task == "p":
+        return _predict_rotation
 
 
 def _do_nothing(image):
@@ -171,3 +175,27 @@ def _rotate_boxes(image):
         image[:, y1:y2, x1:x2] = box[:, :]
 
     return image
+
+
+def _jigsaw(image):
+    raster = torch.zeros(9, 106, 106)
+    for i in range(3):
+        for j in range(3):
+            raster[i*3+j, :, :] = image[:, i*106:(i+1)*106, j*106:(j+1)*106]
+    indices = torch.randperm(9)
+    for i in range(3):
+        for j in range(3):
+            image[:, i*106:(i+1)*106, j*106:(j+1)*106] = raster[indices[i*3+j], :, :]
+
+    return image, indices
+
+
+def _predict_rotation(image):
+    center = torch.zeros(150, 150)
+    center[:, :] = image[:, 85:235, 85:235]
+
+    angle = torch.randint(3, (1,))
+    center = torch.rot90(center, angle.item())
+    image[:, 85:235, 85:235] = center[:, :]
+
+    return image, angle
