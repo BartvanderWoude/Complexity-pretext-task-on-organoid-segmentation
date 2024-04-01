@@ -4,6 +4,7 @@ import src.organoids as org
 import src.logger as lg
 
 import torch
+import torch.nn as nn
 import argparse
 from torchvision import models
 from sklearn.model_selection import KFold
@@ -20,8 +21,15 @@ def get_args():
     return args.task1, args.task2
 
 
-def initialize_model():
-    model = m.UNet(1, 1)
+def initialize_model(task1=""):
+    if task1 == "j":
+        model = m.UNetInnate(1, 1, 9)
+    elif task1 == "p":
+        model = m.UNetInnate(1, 1, 4)
+        model.fc3 = nn.Linear(256, 4)
+        model.reshape = nn.Unflatten(1, (4,))
+    else:
+        model = m.UNet(1, 1)
 
     resnet = models.resnet18(weights="IMAGENET1K_V1")
     top_layers = list(resnet.children())
@@ -45,8 +53,11 @@ def train_pretext(task1="", task2=""):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}")
 
-    model = initialize_model().to(device)
-    loss_fn = m.SSIMLoss().to(device)
+    model = initialize_model(task1=task1).to(device)
+    if task1 == "j" or task1 == "p":
+        loss_fn = nn.CrossEntropyLoss().to(device)
+    else:
+        loss_fn = m.SSIMLoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     logger = lg.Logger("pretext", task1, task2)
 

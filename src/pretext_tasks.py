@@ -198,4 +198,4 @@ def _predict_rotation(image):
     center = torch.rot90(center, angle.item())
     image[:, 85:235, 85:235] = center[:, :]
 
-    return image, angle
+    return image, angle.item()
