@@ -27,7 +27,7 @@ Pretext training can be done using:
 python train_pretext.py --task1=[task option] [--task2=[task option]]
 ```
 
-Testing can be done using:
+Pretext testing can be done using:
 ```
 python test_pretext.py --task1=[task option] [--task2=[task option]]
 ```
