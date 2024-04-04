@@ -18,6 +18,7 @@ def train(model, train_loader, val_loader, optimizer, loss_fn, fold, epochs, dev
 
             print(f'Epoch {epoch} Iteration {i} Loss: {loss.item()}')
             train_loss += loss.item()
+            logger.save_model(model, fold)
         logger.log_training_loss(fold, epoch, train_loss / len(train_loader))
         logger.save_model(model, fold)
 

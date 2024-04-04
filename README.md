@@ -27,11 +27,11 @@ Pretext training can be done using:
 python train_pretext.py --task1=[task option] [--task2=[task option]]
 ```
 
-Testing can be done using:
+Pretext testing can be done using:
 ```
 python test_pretext.py --task1=[task option] [--task2=[task option]]
 ```
-Here, `[task option]` consists of `{b,d,s,r,B,D,S,R}`.
+Here, `[task option]` consists of `{b,d,s,r,B,D,S,R,j,p}`.
 
 ### Downstream
 ![After downstream training models can segment organoids from an image.](./utils/downstream_results.png)
@@ -45,7 +45,7 @@ Downstream testing can be done using:
 ```
 python test_downstream.py --task1=[task option] [--task2=[task option]]
 ```
-Here, `[task option]` consists of `{b,d,s,r,B,D,S,R}`.
+Here, `[task option]` consists of `{b,d,s,r,B,D,S,R,j,p}`.
 
 ## Unit tests
 The folder `tests/` contains python file(s) that contains unit tests for the modules from `src/`. The tests can be run using:

@@ -1,4 +1,4 @@
-import src.selfprediction_distortion as spd
+import src.pretext_tasks as pt
 
 import torch
 import pandas as pd
@@ -16,14 +16,17 @@ class Organoids(Dataset):
         self.task2 = task2
 
         self.prepare_transform = transforms.Compose([transforms.Resize(320, antialias=True),])
-        self.transform_task1 = spd.get_distortion_transform(task1)
-        self.transform_task2 = spd.get_distortion_transform(task2)
+        self.transform_task1 = pt.get_distortion_transform(task1)
+        self.transform_task2 = pt.get_distortion_transform(task2)
         self.basic_transform = transforms.Compose([transforms.ConvertImageDtype(torch.float32),])
 
     def __len__(self):
         return len(self.df)
 
     def __getitem__(self, idx):
+        assert self.task2 != "j", "Jigsaw must be task 1"
+        assert self.task2 != "p", "Predict rotation must be task 1"
+
         img_path = self.path + self.df.iloc[idx, 0]
         image = read_image(img_path)
 
@@ -33,6 +36,12 @@ class Organoids(Dataset):
             gt_path = self.path + self.df.iloc[idx, 1]
             gt = read_image(gt_path)
             gt = self.prepare_transform(gt)
+        if self.task1 == "j" or self.task1 == "p":
+            assert not self.task2, "Jigsaw/predict rotation must be single task only"
+
+            image, gt = self.transform_task1(image)
+            image = self.basic_transform(image)
+            return (image, gt)
         else:
             gt = image.clone()
 

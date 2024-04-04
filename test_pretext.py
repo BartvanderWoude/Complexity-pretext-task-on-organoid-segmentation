@@ -4,6 +4,7 @@ import src.logger as lg
 import src.evaluation as ev
 
 import torch
+import torch.nn as nn
 import argparse
 import os
 from torch.utils.data import DataLoader
@@ -34,6 +35,19 @@ def get_pretrained_model(task1="", task2=""):
     return model_paths
 
 
+def initialize_model(task1=""):
+    if task1 == "j":
+        model = m.UNetInnate(1, 1, 9)
+    elif task1 == "p":
+        model = m.UNetInnate(1, 1, 4)
+        model.fc3 = nn.Linear(256, 4)
+        model.reshape = nn.Unflatten(1, (4,))
+    else:
+        model = m.UNet(1, 1)
+
+    return model
+
+
 def test_pretext(task1, task2):
     batch_size = 16
 
@@ -49,9 +63,7 @@ def test_pretext(task1, task2):
 
     model_paths = get_pretrained_model(task1=task1, task2=task2)
     for fold, (model_path) in enumerate(model_paths):
-        model = m.UNet(1, 1)
-
-        # Load pretext trained model
+        model = initialize_model(task1=task1)
         model.load_state_dict(torch.load(model_path))
         model = model.to(device)
 
