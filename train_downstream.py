@@ -49,7 +49,7 @@ def initialize_model():
     model = m.UNet(1, 1)
 
     pretrained = get_pretrained_model(task1=task1, task2=task2)
-    model.load_state_dict(torch.load(pretrained))
+    model.load_state_dict(torch.load(pretrained), strict=False)
 
     model.final_conv = torch.nn.Conv2d(64, 1, kernel_size=1)
     for i in range(len(model.down_conv)):

@@ -13,9 +13,20 @@ def f1(y_pred, y):
     return 2 * (precision * recall) / (precision + recall)
 
 
+class InverseCrossEntropyLoss(torch.nn.Module):
+    def __init__(self):
+        super(InverseCrossEntropyLoss, self).__init__()
+
+    def forward(self, y_pred, y):
+        return -torch.nn.functional.cross_entropy(y_pred, y)
+
+
 def evaluate(task1, task2, fold, model, test_loader, device, logger):
     if logger.type_training == "pretext":
-        metric_fn = PSNR()
+        if task1 == "j" or task1 == "p":
+            metric_fn = InverseCrossEntropyLoss()
+        else:
+            metric_fn = PSNR()
     elif logger.type_training == "downstream":
         metric_fn = f1
 
