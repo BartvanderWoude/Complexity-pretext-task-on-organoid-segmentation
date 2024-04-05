@@ -8,9 +8,9 @@ from torchvision.io import read_image
 
 
 class Organoids(Dataset):
-    def __init__(self, file, path="./", task1="", task2=""):
-        self.df = pd.read_csv(path + file, header=None, names=["stacks", "masks"])
-        self.path = path + "organoid_data/"
+    def __init__(self, csv_path, path="./", data_path="organoid_data/", task1="", task2=""):
+        self.df = pd.read_csv(path + csv_path, header=None, names=["stacks", "masks"])
+        self.path = path + data_path
 
         self.task1 = task1
         self.task2 = task2

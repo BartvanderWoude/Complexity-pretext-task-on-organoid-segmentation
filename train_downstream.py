@@ -15,10 +15,11 @@ def get_args():
     parser = argparse.ArgumentParser(description='Downstream Training')
     parser.add_argument('--task1', type=str, default="", help='Specify pretrained task to load for task 1')
     parser.add_argument('--task2', type=str, default="", help='Specify pretrained task to load for task 2')
+    parser.add_argument('--dummy', type=bool, default=False, help='Use dummy data')
 
     args = parser.parse_args()
 
-    return args.task1, args.task2
+    return args.task1, args.task2, args.dummy
 
 
 def get_pretrained_model(task1="", task2=""):
@@ -59,7 +60,7 @@ def initialize_model():
     return model
 
 
-def train_downstream(task1="", task2=""):
+def train_downstream(task1, task2, use_dummy):
     print(f"Downstream training with tasks: {task1}, {task2}")
     crossval_folds = 5
     epochs = 50
@@ -74,7 +75,14 @@ def train_downstream(task1="", task2=""):
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     logger = lg.Logger("downstream", task1, task2)
 
-    dataset = org.Organoids(file="utils/downstream_train.csv")
+    if use_dummy:
+        csv_path = "utils/dummy.csv"
+        data_path = "dummy_data/"
+    else:
+        csv_path = "utils/downstream_train.csv"
+        data_path = "organoid_data/"
+
+    dataset = org.Organoids(csv_path=csv_path, data_path=data_path)
     kf = KFold(n_splits=crossval_folds, shuffle=True, random_state=64)
 
     for fold, (train_index, val_index) in enumerate(kf.split(dataset)):
@@ -97,6 +105,6 @@ def train_downstream(task1="", task2=""):
 
 
 if __name__ == '__main__':
-    task1, task2 = get_args()
+    task1, task2, use_dummy = get_args()
 
-    train_downstream(task1=task1, task2=task2)
+    train_downstream(task1=task1, task2=task2, use_dummy=use_dummy)
