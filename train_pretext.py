@@ -15,10 +15,11 @@ def get_args():
     parser = argparse.ArgumentParser(description='Pretext Training')
     parser.add_argument('--task1', type=str, default="", help='Specify distortion type for task 1')
     parser.add_argument('--task2', type=str, default="", help='Specify distortion type for task 2')
+    parser.add_argument('--dummy', type=bool, default=False, help='Use dummy data')
 
     args = parser.parse_args()
 
-    return args.task1, args.task2
+    return args.task1, args.task2, args.dummy
 
 
 def initialize_model(task1=""):
@@ -43,7 +44,7 @@ def initialize_model(task1=""):
     return model
 
 
-def train_pretext(task1="", task2=""):
+def train_pretext(task1, task2, use_dummy):
     print(f"Pretext training with tasks: {task1}, {task2}")
     crossval_folds = 5
     epochs = 50
@@ -61,7 +62,14 @@ def train_pretext(task1="", task2=""):
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     logger = lg.Logger("pretext", task1, task2)
 
-    dataset = org.Organoids(file="utils/pretext_train.csv", task1=task1, task2=task2)
+    if use_dummy:
+        csv_path = "utils/dummy.csv"
+        data_path = "dummy_data/"
+    else:
+        csv_path = "utils/pretext_train.csv"
+        data_path = "organoid_data/"
+
+    dataset = org.Organoids(csv_path=csv_path, data_path=data_path, task1=task1, task2=task2)
     kf = KFold(n_splits=crossval_folds, shuffle=True, random_state=64)
 
     for fold, (train_index, val_index) in enumerate(kf.split(dataset)):
@@ -85,6 +93,6 @@ def train_pretext(task1="", task2=""):
 
 
 if __name__ == '__main__':
-    task1, task2 = get_args()
+    task1, task2, use_dummy = get_args()
 
-    train_pretext(task1=task1, task2=task2)
+    train_pretext(task1=task1, task2=task2, use_dummy=use_dummy)

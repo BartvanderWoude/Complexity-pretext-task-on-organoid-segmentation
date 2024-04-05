@@ -14,13 +14,14 @@ def get_args():
     parser = argparse.ArgumentParser(description='Pretext Testing')
     parser.add_argument('--task1', type=str, default="", help='Specify distortion type for task 1')
     parser.add_argument('--task2', type=str, default="", help='Specify distortion type for task 2')
+    parser.add_argument('--dummy', type=bool, default=False, help='Use dummy data')
 
     args = parser.parse_args()
 
-    return args.task1, args.task2
+    return args.task1, args.task2, args.dummy
 
 
-def get_pretrained_model(task1="", task2=""):
+def get_pretrained_models(task1="", task2=""):
     model_path = f"output/models/pretext/{task1}_{task2}/"
 
     if not os.path.exists(model_path):
@@ -48,29 +49,41 @@ def initialize_model(task1=""):
     return model
 
 
-def test_pretext(task1, task2):
-    batch_size = 16
-
+def test_pretext(task1, task2, use_dummy):
     print(f"Pretext testing with tasks: {task1}, {task2}")
+    batch_size = 16
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}")
 
-    dataset = org.Organoids(file="utils/test.csv", task1=task1, task2=task2)
+    if use_dummy:
+        csv_path = "utils/dummy.csv"
+        data_path = "dummy_data/"
+    else:
+        csv_path = "utils/test.csv"
+        data_path = "organoid_data/"
+
+    dataset = org.Organoids(csv_path=csv_path, data_path=data_path, task1=task1, task2=task2)
     test_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
     logger = lg.Logger("pretext", task1, task2, evaluating=True)
 
-    model_paths = get_pretrained_model(task1=task1, task2=task2)
+    model_paths = get_pretrained_models(task1=task1, task2=task2)
     for fold, (model_path) in enumerate(model_paths):
         model = initialize_model(task1=task1)
         model.load_state_dict(torch.load(model_path))
         model = model.to(device)
 
-        ev.evaluate(task1, task2, fold, model, test_loader, device, logger)
+        ev.evaluate(task1=task1,
+                    task2=task2,
+                    fold=fold,
+                    model=model,
+                    test_loader=test_loader,
+                    device=device,
+                    logger=logger)
 
 
 if __name__ == '__main__':
-    task1, task2 = get_args()
+    task1, task2, use_dummy = get_args()
 
-    test_pretext(task1=task1, task2=task2)
+    test_pretext(task1=task1, task2=task2, use_dummy=use_dummy)
