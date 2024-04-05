@@ -48,9 +48,3 @@ python test_downstream.py --task1=[task option] [--task2=[task option]] [--dummy
 ```
 `[task option]` consists of `{b,d,s,r,B,D,S,R,j,p}` and represents the different self prediction/ innate relationship pretext tasks. Self prediction pretext tasks can be combined by specifying the second task `--task2` as well.
 `--dummy True` specifies the use of the dummy data set rather than the actual data set. Default is set to `False`.
-
-## Unit tests
-The folder `tests/` contains unit tests for the modules from `src/`. Tests can be run using:
-```
-pytest tests/*.py
-```
