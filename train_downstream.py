@@ -63,16 +63,14 @@ def initialize_model():
 def train_downstream(task1, task2, use_dummy):
     print(f"Downstream training with tasks: {task1}, {task2}")
     crossval_folds = 5
-    epochs = 50
+    epochs = 25
     batch_size = 16
     learning_rate = 0.001
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}")
 
-    model = initialize_model().to(device)
     loss_fn = m.IoULoss().to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     logger = lg.Logger("downstream", task1, task2)
 
     if use_dummy:
@@ -87,6 +85,10 @@ def train_downstream(task1, task2, use_dummy):
 
     for fold, (train_index, val_index) in enumerate(kf.split(dataset)):
         print("Fold: ", fold)
+
+        model = initialize_model().to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
         train_dataset = torch.utils.data.Subset(dataset, train_index)
         val_dataset = torch.utils.data.Subset(dataset, val_index)
 

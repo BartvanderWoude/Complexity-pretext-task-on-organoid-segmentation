@@ -47,19 +47,17 @@ def initialize_model(task1=""):
 def train_pretext(task1, task2, use_dummy):
     print(f"Pretext training with tasks: {task1}, {task2}")
     crossval_folds = 5
-    epochs = 50
+    epochs = 25
     batch_size = 16
     learning_rate = 0.001
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}")
 
-    model = initialize_model(task1=task1).to(device)
     if task1 == "j" or task1 == "p":
         loss_fn = nn.CrossEntropyLoss().to(device)
     else:
         loss_fn = m.SSIMLoss().to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     logger = lg.Logger("pretext", task1, task2)
 
     if use_dummy:
@@ -74,6 +72,9 @@ def train_pretext(task1, task2, use_dummy):
 
     for fold, (train_index, val_index) in enumerate(kf.split(dataset)):
         print("Fold: ", fold)
+
+        model = initialize_model(task1=task1).to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
         train_dataset = torch.utils.data.Subset(dataset, train_index)
         val_dataset = torch.utils.data.Subset(dataset, val_index)

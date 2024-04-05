@@ -14,7 +14,7 @@ organoid_data/
 organoid_data/1CA5KMCR7K7MT53OS7FG/
 etc.
 ```
-Repository contains dummy dataset to test out functionality.
+Repository contains dummy dataset to test functionality.
 
 ## Usage
 As described in the paper, training is divided into pretext training and downstream training.
@@ -31,6 +31,7 @@ Testing of pretext trained models can be done using:
 python test_pretext.py --task1=[task option] [--task2=[task option]] [--dummy True]
 ```
 `[task option]` consists of `{b,d,s,r,B,D,S,R,j,p}` and represents the different self prediction/ innate relationship pretext tasks. Self prediction pretext tasks can be combined by specifying the second task `--task2` as well.
+
 `--dummy True` specifies the use of the dummy data set rather than the actual data set. Default is set to `False`.
 
 ### Downstream
@@ -47,4 +48,5 @@ Testing of downstream trained models can be done using:
 python test_downstream.py --task1=[task option] [--task2=[task option]] [--dummy True]
 ```
 `[task option]` consists of `{b,d,s,r,B,D,S,R,j,p}` and represents the different self prediction/ innate relationship pretext tasks. Self prediction pretext tasks can be combined by specifying the second task `--task2` as well.
+
 `--dummy True` specifies the use of the dummy data set rather than the actual data set. Default is set to `False`.
