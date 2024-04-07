@@ -12,15 +12,19 @@ class DoubleConvolution(nn.Module):
 
         self.first = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
         self.act1 = nn.ReLU()
+        self.batch_norm1 = nn.BatchNorm2d(out_channels)
 
         self.second = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1)
         self.act2 = nn.ReLU()
+        self.batch_norm2 = nn.BatchNorm2d(out_channels)
 
     def forward(self, x: torch.Tensor):
         x = self.first(x)
         x = self.act1(x)
+        x = self.batch_norm1(x)
         x = self.second(x)
         x = self.act2(x)
+        x = self.batch_norm2(x)
         return x
 
 
