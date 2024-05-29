@@ -125,8 +125,8 @@ class UNetInnate(nn.Module):
         x = self.final_conv(x)
 
         x = torch.flatten(x, 1)
-        x = self.fc1(x)
-        x = self.fc2(x)
+        x = torch.nn.functional.relu(self.fc1(x))
+        x = torch.nn.functional.relu(self.fc2(x))
         x = self.fc3(x)
         x = self.reshape(x)
 
